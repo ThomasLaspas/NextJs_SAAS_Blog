@@ -34,7 +34,7 @@ function page() {
     fetchBlog();
   }, []);
   if (load) {
-    return <h1>Loadding...</h1>;
+    return;
   }
   return (
     <div className="mt-6 sm:px-tablet  ">
