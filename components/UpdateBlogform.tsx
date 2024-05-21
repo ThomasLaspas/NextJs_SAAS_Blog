@@ -106,9 +106,9 @@ function UBlogForm({ dataa }: Props) {
           description: `Your profile have error to update in databse .`,
         });
       } else {
-        const { data, error } = await supabase.storage
+        const { data } = await supabase.storage
           .from("Blog")
-          .createSignedUrl(`saasblog/${filename}`, 60 * 60);
+          .getPublicUrl(`saasblog/${filename}`);
         if (error) {
           setload(false);
           console.log("failed to convert to url");
@@ -119,7 +119,7 @@ function UBlogForm({ dataa }: Props) {
             content: values.content,
             title: values.title,
             created_at: dataa.created_at,
-            image_url: data.signedUrl,
+            image_url: data.publicUrl,
             is_premium: values.is_premium,
             is_published: values.is_published,
           };
