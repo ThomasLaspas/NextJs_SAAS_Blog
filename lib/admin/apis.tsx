@@ -32,7 +32,25 @@ export async function createBlog(dat: {
   }
   return;
 }
+export async function Getusers() {
+  const supabase = await createSupabaseServerClient();
+  const { data } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("role", "user")
+    .order("created_at", { ascending: true });
 
+  return data as {
+    id: string;
+    email: string;
+    created_at: string;
+    role: string;
+    subscription_status: boolean;
+    username: string;
+    stripe_customer_id: string;
+    stripe_subscription_id: string;
+  }[];
+}
 export async function readBlog() {
   const supabase = await createSupabaseServerClient();
   return supabase
