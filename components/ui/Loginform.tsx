@@ -1,9 +1,10 @@
 "use client";
 import * as z from "zod";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createBrowserClient } from "@supabase/ssr";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {
   Form,
   FormControl,
@@ -42,6 +43,8 @@ const formSchema2 = z.object({
 });
 
 export default function Loginform() {
+  const [load, setload] = useState<boolean>(false);
+  const [load2, setload2] = useState<boolean>(false);
   const { toast } = useToast();
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -66,8 +69,8 @@ export default function Loginform() {
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log({ values });
     if (values.password === values.passwordConfirm) {
+      setload2(true);
       const { error } = await supabase.auth.signUp({
         email: values.emailAddress,
         password: values.password,
@@ -78,7 +81,7 @@ export default function Loginform() {
           title: "Uh oh! Something went wrong.",
           description: "There was a problem with your details try again.",
         });
-
+        setload2(false);
         return;
       }
 
@@ -87,10 +90,12 @@ export default function Loginform() {
         title: "You create o profile succefully.",
         description: `Check your verification email that we sent to ${values.emailAddress}.`,
       });
+      setload2(false);
       return;
     }
   };
   const handleSubmit2 = async (values: z.infer<typeof formSchema2>) => {
+    setload(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.emailAddress,
       password: values.password,
@@ -102,10 +107,10 @@ export default function Loginform() {
         title: "Uh oh! Something went wrong.",
         description: "There was a problem with your details try again.",
       });
-
+      setload(false);
       return;
     }
-
+    setload(false);
     return (window.location.href = "/");
   };
   const change = () => {
@@ -160,14 +165,17 @@ export default function Loginform() {
               }}
             />
 
-            <Button type="submit" className="w-full">
-              SignIn
+            <Button type="submit" className="w-full flex items-center gap-6">
+              SignIn{" "}
+              <AiOutlineLoading3Quarters
+                className={load ? "animate-spin" : "hidden"}
+              />
             </Button>
           </form>
           <GitHubLoginButton />
           <Goggleloginbutton />
           <div className="flex items-center space-x-2 mt-4">
-            <Switch id="airplane-mode" onClick={change} />
+            <Switch id="airplane-mode" onClick={change} checked={!sign} />
             <Label htmlFor="airplane-mode">{sign ? "SignUp" : "SignIn"}</Label>
           </div>
         </Form>
@@ -235,12 +243,15 @@ export default function Loginform() {
                 );
               }}
             />
-            <Button type="submit" className="w-full">
-              SignUp
+            <Button type="submit" className="w-full flex items-center gap-6">
+              SignUp{" "}
+              <AiOutlineLoading3Quarters
+                className={load2 ? "animate-spin" : "hidden"}
+              />
             </Button>
           </form>
           <div className="flex items-center space-x-2 mt-4">
-            <Switch id="airplane-mode" onClick={change} />
+            <Switch id="airplane-mode" onClick={change} checked={!sign} />
             <Label htmlFor="airplane-mode">{sign ? "SignUp" : "SingIn"}</Label>
           </div>
         </Form>

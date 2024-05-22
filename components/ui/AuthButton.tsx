@@ -53,7 +53,7 @@ export default function AuthButton() {
     };
     getUser();
   }, []);
-  console.log(stripe);
+
   const admin = isAdmin === "admin";
   const signOut = async () => {
     await supabase.auth.signOut();

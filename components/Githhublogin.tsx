@@ -1,9 +1,12 @@
 "use client";
 import { FaGithub } from "react-icons/fa";
 import { createBrowserClient } from "@supabase/ssr";
+import { useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { redirect } from "next/navigation";
 import { Button } from "./ui/button";
 const GitHubLoginButton = () => {
+  const [load, setload] = useState<boolean>(false);
   const loginWithGitHub = async () => {
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -36,7 +39,8 @@ const GitHubLoginButton = () => {
       onClick={loginWithGitHub}
     >
       Sign in with GitHub
-      <FaGithub />
+      <FaGithub />{" "}
+      <AiOutlineLoading3Quarters className={load ? "animate-spin" : "hidden"} />
     </Button>
   );
 };
